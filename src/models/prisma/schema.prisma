@@ -6,3 +6,50 @@ datasource db {
   provider = "postgresql"
   url      = env("DB_CONNECTION_URL")
 }
+
+model User {
+  userId          Int         @id @default(autoincrement())
+  username        String      @unique
+  password        String
+  profile_picture String?
+  role            Role        @default(USER)
+  posts           Post[]
+  comments        Comment[]
+  Subreddit       Subreddit[]
+}
+
+model Post {
+  postId      Int       @id @default(autoincrement())
+  content     String
+  title       String
+  date_posted DateTime  @default(now())
+  upvotes     Int       @default(1)
+  downvotes   Int       @default(0)
+  comments    Comment[]
+  author      User      @relation(fields: [authorId], references: [userId])
+  authorId    Int
+  Subreddit   Subreddit @relation(fields: [subredditId], references: [subredditId], onDelete: Cascade)
+  subredditId Int
+}
+
+model Comment {
+  commentId   Int      @id @default(autoincrement())
+  content     String
+  date_posted DateTime @default(now())
+  author      User     @relation(fields: [authorId], references: [userId])
+  authorId    Int
+  Post        Post     @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  postId      Int
+}
+
+model Subreddit {
+  subredditId Int    @id @default(autoincrement())
+  posts       Post[]
+  owner       User   @relation(fields: [ownerId], references: [userId])
+  ownerId     Int
+}
+
+enum Role {
+  USER
+  ADMIN
+}

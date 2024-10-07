@@ -8,7 +8,7 @@
     "start": "npm run build && node dist/index.js"
   },
   "prisma": {
-    "schema": "src/models/prisma/schema.prisma"
+    "schema": "src/model/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",

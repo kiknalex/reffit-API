@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  userId          Int         @id @default(autoincrement())
-  username        String      @unique
-  password        String
-  profile_picture String?
-  role            Role        @default(USER)
-  posts           Post[]
-  comments        Comment[]
-  Subreddit       Subreddit[]
+  userId               Int         @id @default(autoincrement())
+  username             String      @unique
+  password             String
+  profile_picture      String?
+  role                 Role        @default(USER)
+  posts                Post[]
+  comments             Comment[]
+  ownedSubreddits      Subreddit[] @relation("OwnerSubreddits")
+  subscribedSubreddits Subreddit[] @relation("SubscribedSubreddits")
 }
 
 model Post {
@@ -45,8 +46,9 @@ model Comment {
 model Subreddit {
   subredditId Int    @id @default(autoincrement())
   posts       Post[]
-  owner       User   @relation(fields: [ownerId], references: [userId])
+  owner       User   @relation("OwnerSubreddits", fields: [ownerId], references: [userId])
   ownerId     Int
+  users       User[] @relation("SubscribedSubreddits")
 }
 
 enum Role {
